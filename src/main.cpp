@@ -97,7 +97,7 @@ void dataSend()
   uint8_t data[13];
   Packet packet(PacketType::DATA);
 
-  packet.to = 0xAABBCCDD;
+  packet.to = 0;
 
   packet.toBytes(data);
 
@@ -146,6 +146,7 @@ void receivedDataDisplay()
     packet.fromBytes(receivedData);
     both.printf("TO: %.d\n", packet.to);
     both.printf("FROM: %.d\n", packet.from);
+    both.printf("Type: %.d\n", packet.type);
   }
   RADIOLIB_OR_HALT(radio.startReceive(RADIOLIB_SX126X_RX_TIMEOUT_INF));
   heltec_led(0);
