@@ -1,6 +1,26 @@
 #include "Packet.h"
 #include <HashUtil.h>
 
+// 🔥 **Новый** конструктор из массива байтов
+Packet::Packet(const uint8_t *buffer) {
+    hash = (uint32_t(buffer[0]) << 24) |
+           (uint32_t(buffer[1]) << 16) |
+           (uint32_t(buffer[2]) << 8)  |
+           uint32_t(buffer[3]);
+
+    to = (uint32_t(buffer[4]) << 24) |
+         (uint32_t(buffer[5]) << 16) |
+         (uint32_t(buffer[6]) << 8)  |
+         uint32_t(buffer[7]);
+
+    from = (uint32_t(buffer[8]) << 24) |
+           (uint32_t(buffer[9]) << 16) |
+           (uint32_t(buffer[10]) << 8) |
+           uint32_t(buffer[11]);
+
+    type = static_cast<PacketType>(buffer[12]);
+}
+
 void Packet::toBytes(uint8_t *buffer) const
 {
     uint8_t data[9];
@@ -32,25 +52,4 @@ void Packet::toBytes(uint8_t *buffer) const
 
     // Копируем 8 байт из src в dest (начиная с 4-го байта)
     memcpy(&buffer[4], data, 9); // Копируем с 4-го байта массива data 9 байт
-}
-
-void Packet::fromBytes(const uint8_t *buffer)
-{
-    hash = (uint32_t(buffer[0]) << 24) |
-           (uint32_t(buffer[1]) << 16) |
-           (uint32_t(buffer[2]) << 8) |
-           uint32_t(buffer[3]);
-
-    to = (uint32_t(buffer[4]) << 24) |
-             (uint32_t(buffer[5]) << 16) |
-             (uint32_t(buffer[6]) << 8) |
-             uint32_t(buffer[7]);
-
-    from = (uint32_t(buffer[8]) << 24) |
-               (uint32_t(buffer[9]) << 16) |
-               (uint32_t(buffer[10]) << 8) |
-               uint32_t(buffer[11]);
-               
-    // Восстановление type
-    type = static_cast<PacketType>(buffer[12]); // Преобразуем байт в тип PacketType
 }

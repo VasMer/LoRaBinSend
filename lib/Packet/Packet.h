@@ -22,12 +22,13 @@ struct Packet
     PacketType type;   // Тип пакета (1 байт)
 
     // Конструктор, инициализирующий только type
-    Packet(PacketType t) : type(t), to(0), from(Identity::get()) {}
+    Packet(PacketType type) 
+        : type(type), from(Identity::get()) {}
+    // Конструктор, инициализирующий из байтов
+    Packet(const uint8_t *data);
 
     // Метод для преобразования структуры в массив байтов
     void toBytes(uint8_t *buffer) const;
-    // Метод для восстановления структуры из массива байтов
-    void fromBytes(const uint8_t *buffer);
 };
 
 #endif // PACKET_H

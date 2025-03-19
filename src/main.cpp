@@ -141,9 +141,8 @@ void receivedDataDisplay()
     both.printf("RSSI: %ddBm, ", (int)round(radio.getRSSI()));
     both.printf("SNR: %.1fdB\n", radio.getSNR());
 
-    Packet packet(PacketType::ACK);
+    Packet packet(receivedData);
 
-    packet.fromBytes(receivedData);
     both.printf("TO: %.d\n", packet.to);
     both.printf("FROM: %.d\n", packet.from);
     both.printf("Type: %.d\n", packet.type);
