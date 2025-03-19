@@ -94,22 +94,22 @@ void dataSend()
 {
   int state;
   uint64_t tx_time;
-  uint8_t data[13];
+  std::vector<uint8_t>  data;
   Packet packet(PacketType::DATA);
 
   packet.to = 0;
 
-  packet.toBytes(data);
+  data = packet.toBytes();
 
-  dataPrint(data);
+  dataPrint(data.data());
 
-  both.printf("Sending %i b...", sizeof(data));
+  both.printf("Sending %i b...", data.size());
   tx_time = millis();
   heltec_led(50);
   // Stop listening
   radio.clearDio1Action();
   // Transmit
-  state = radio.transmit(data, sizeof(data));
+  state = radio.transmit(data.data(), data.size());
   heltec_led(0);
   tx_time = millis() - tx_time;
 

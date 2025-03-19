@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Identity.h>
+#include <vector>
 
 // Перечисление для типов пакетов
 enum class PacketType : uint8_t
@@ -28,7 +29,7 @@ struct Packet
     Packet(const uint8_t *data);
 
     // Метод для преобразования структуры в массив байтов
-    void toBytes(uint8_t *buffer) const;
+    std::vector<uint8_t> toBytes() const;
 };
 
 #endif // PACKET_H

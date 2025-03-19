@@ -21,8 +21,9 @@ Packet::Packet(const uint8_t *buffer) {
     type = static_cast<PacketType>(buffer[12]);
 }
 
-void Packet::toBytes(uint8_t *buffer) const
+std::vector<uint8_t> Packet::toBytes() const
 {
+    std::vector<uint8_t> buffer(4);
     uint8_t data[9];
     uint32_t hash;
 
@@ -50,6 +51,7 @@ void Packet::toBytes(uint8_t *buffer) const
     buffer[2] = (hash >> 8) & 0xFF;
     buffer[3] = hash & 0xFF;
 
-    // Копируем 8 байт из src в dest (начиная с 4-го байта)
-    memcpy(&buffer[4], data, 9); // Копируем с 4-го байта массива data 9 байт
+    buffer.insert(buffer.end(), data, data + 9);  // Вставляем с 4-го байта
+
+    return buffer;
 }
