@@ -30,6 +30,9 @@ struct Packet
 
     // Метод для преобразования структуры в массив байтов
     std::vector<uint8_t> toBytes() const;
+
+    // Метод проверки наш или нет, из массива байтов
+    static bool ourPacket(const uint8_t *buffer, size_t length);
 };
 
 #endif // PACKET_H

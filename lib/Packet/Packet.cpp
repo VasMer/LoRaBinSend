@@ -55,3 +55,19 @@ std::vector<uint8_t> Packet::toBytes() const
 
     return buffer;
 }
+
+bool Packet::ourPacket(const uint8_t *buffer, size_t length) {
+    uint8_t data[9];
+    uint32_t computedHash;
+    uint32_t hash = (uint32_t(buffer[0]) << 24) |
+                    (uint32_t(buffer[1]) << 16) |
+                    (uint32_t(buffer[2]) << 8)  |
+                    uint32_t(buffer[3]);
+    
+    // Копируем 9 байтов, начиная с 4-го байта
+    memcpy(data, buffer + 4, 9);
+    //Hash data only
+    computedHash = HashUtil::compute(data);
+
+    return hash == computedHash;
+}

@@ -37,7 +37,7 @@ void radioSetup();
 void dataSend();
 void lora_receive();
 void receivedDataDisplay();
-void dataPrint(uint8_t *buffer);
+void dataPrint(uint8_t *buffer, size_t length);
 
 void setup()
 {
@@ -94,14 +94,14 @@ void dataSend()
 {
   int state;
   uint64_t tx_time;
-  std::vector<uint8_t>  data;
+  std::vector<uint8_t> data;
   Packet packet(PacketType::DATA);
 
   packet.to = 0;
 
   data = packet.toBytes();
 
-  dataPrint(data.data());
+  dataPrint(data.data(), data.size());
 
   both.printf("Sending %i b...", data.size());
   tx_time = millis();
@@ -129,7 +129,7 @@ void dataSend()
 void receivedDataDisplay()
 {
   uint8_t receivedData[256]; // Буфер для хранения принятого пакета
-  int packetSize = radio.getPacketLength();
+  size_t packetSize = radio.getPacketLength();
 
   heltec_led(10);
   _packageAvailable = false;
@@ -137,24 +137,26 @@ void receivedDataDisplay()
   if (_radiolib_status == RADIOLIB_ERR_NONE)
   {
     both.printf("RX %d bytes [%d]\n", packetSize, receivedData[19]);
-    dataPrint(receivedData);
+    dataPrint(receivedData, packetSize);
     both.printf("RSSI: %ddBm, ", (int)round(radio.getRSSI()));
     both.printf("SNR: %.1fdB\n", radio.getSNR());
 
-    Packet packet(receivedData);
+    if(Packet::ourPacket(receivedData, packetSize)){
+      Packet packet(receivedData);
 
-    both.printf("TO: %.d\n", packet.to);
-    both.printf("FROM: %.d\n", packet.from);
-    both.printf("Type: %.d\n", packet.type);
+      both.printf("TO: %.d\n", packet.to);
+      both.printf("FROM: %.d\n", packet.from);
+      both.printf("Type: %.d\n", packet.type);
+    }
   }
   RADIOLIB_OR_HALT(radio.startReceive(RADIOLIB_SX126X_RX_TIMEOUT_INF));
   heltec_led(0);
 }
 
-void dataPrint(uint8_t *buffer)
+void dataPrint(uint8_t *buffer, size_t length)
 {
 
-  for (int i = 0; i < 13; i++)
+  for (int i = 0; i < length; i++)
   {
     both.printf("%02X", buffer[i]);
   }
